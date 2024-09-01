@@ -61,7 +61,7 @@ class MovieServiceImpl(
         val url = "https://www.wikidata.org/w/api.php?action=wbsearchentities&search=$movieTitle&language=en&format=json"
         val response: SearchResult = client.get(url) {
             contentType(ContentType.Application.Json)
-        }.body()  // Deserialize the response body into org.jetbrains.edu.kotlin.SearchResult
+        }.body()  
 
         response.search.find { it.description.contains("film", ignoreCase = true) }?.id
     }
@@ -70,18 +70,18 @@ class MovieServiceImpl(
         print(url)
         val castResult: CastResult = client.get(url) {
             contentType(ContentType.Application.Json)
-        }.body()  // Deserialize the response body into org.jetbrains.edu.kotlin.CastResult
+        }.body()  
 
         val castIds = castResult.claims.pp161.map { it.mainsnak.datavalue.value.id }
 
-        // Fetch the names for each cast member ID
+        
         castIds.map { castId ->
             val url2 = "https://www.wikidata.org/w/api.php?action=wbgetentities&ids=$castId&format=json"
             val actorResult: ActorResult = client.get(url2) {
                 contentType(ContentType.Application.Json)
-            }.body()  // Deserialize the response body into org.jetbrains.edu.kotlin.ActorResult
+            }.body()  
 
-            // Assuming the name is in the "labels" field under the "en" language
+           
             actorResult.entities[castId]?.labels?.get("en")?.value ?: "Unknown Actor"
         }
     }
